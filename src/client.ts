@@ -28,7 +28,7 @@ const publicMQTTServer = {
 //     pretty: false,
 // };
 
-const { host, port, topic, gunzip, pretty } = args;
+const { host, port, topic, gunzip, pretty, verbose } = args;
 
 
 const space = pretty ? 2 : undefined;
@@ -38,9 +38,10 @@ const mqttClient = connect(host, { port });
 
 
 const onConnected = async () => {
-    console.debug("connected to", host, port);
+    console.debug("connected to", host, "on port", port);
 
     await mqttClient.subscribe(topic);
+    console.debug("subscribed to", topic);
 
 
     mqttClient.on(
@@ -54,7 +55,7 @@ const onConnected = async () => {
                     decoded = decodePayload(body);
                 }
 
-                console.log(topic, JSON.stringify(decoded, null, space));
+                console.log(verbose ? topic : "", JSON.stringify(decoded, null, space));
             }
         }
     );
