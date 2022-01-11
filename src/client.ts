@@ -45,14 +45,14 @@ const onConnected = async () => {
         "message",
         async (topic: string, payload: Buffer, msg: Packet) => {
             if (msg.cmd === "publish") {
-                const decoded = decodePayload(payload);
+                let decoded = decodePayload(payload);
 
                 if (decode && (decoded.uuid !== undefined)) {
                     const body = pako.inflate(decoded.body);
-                    console.log(topic, JSON.stringify(decodePayload(body), null, space));
-                } else {
-                    console.log(topic, JSON.stringify(decoded, null, space));
+                    decoded = decodePayload(body);
                 }
+
+                console.log(topic, JSON.stringify(decoded, null, space));
             }
         }
     );
