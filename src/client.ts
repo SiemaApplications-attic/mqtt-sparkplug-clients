@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { connect } from "async-mqtt";
 import { Packet } from "mqtt-packet";
 import pako from "pako";
+import { args } from "./args";
 
 const decodePayload = require('sparkplug-payload').get("spBv1.0").decodePayload;
 
@@ -10,12 +11,12 @@ const decodePayload = require('sparkplug-payload').get("spBv1.0").decodePayload;
 
 
 const publicMQTTServer = {
-    url: "mqtt://test.mosquitto.org",
+    host: "mqtt://test.mosquitto.org",
     port: 1883,
     // topic: "spBv1.0/Edge Nodes/#"
     // topic: "spBv1.0/Sparkplug B Devices/+/JSON-SCADA Server/#",
     topic: "spBv1.0/#",
-    decode: false,
+    gunzip: false,
     pretty: false,
 };
 // const publicMQTTServer = {
@@ -27,16 +28,17 @@ const publicMQTTServer = {
 //     pretty: false,
 // };
 
-const { url, port, topic, decode = true, pretty = false } = publicMQTTServer;
+const { host, port, topic, gunzip, pretty } = args;
+
 
 const space = pretty ? 2 : undefined;
 
 
-const mqttClient = connect(url, { port });
+const mqttClient = connect(host, { port });
 
 
 const onConnected = async () => {
-    console.debug("connected to", url, port);
+    console.debug("connected to", host, port);
 
     await mqttClient.subscribe(topic);
 
@@ -47,7 +49,7 @@ const onConnected = async () => {
             if (msg.cmd === "publish") {
                 let decoded = decodePayload(payload);
 
-                if (decode && (decoded.uuid !== undefined)) {
+                if (gunzip && (decoded.uuid !== undefined)) {
                     const body = pako.inflate(decoded.body);
                     decoded = decodePayload(body);
                 }
