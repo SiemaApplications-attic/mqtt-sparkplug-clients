@@ -4,7 +4,7 @@ import { hideBin } from "yargs/helpers";
 
 
 export const args = yargs(hideBin(process.argv))
-    .completion()
+    .usage("Usage: $0 [options]")
     .option('verbose', {
         alias: 'v',
         type: 'boolean',
@@ -36,8 +36,14 @@ export const args = yargs(hideBin(process.argv))
     })
     .option("pretty", {
         type: "boolean",
-        description: "format JSON payload",
+        description: "'pretty-print' JSON payload",
         default: false,
     })
+    .example([
+        ['$0 -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"'],
+        ['$0 -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#" | cut -c -180'],
+        ['$0 -h mqtt://broker.hivemq.com -t "spBv1.0/ICSEdge/#"'],
+        ['$0 -h mqtt://test.mosquitto.org -t "spBv1.0/Sparkplug B Devices/+/JSON-SCADA Server/#" -g -v'],
+    ])
     .parseSync();
 
