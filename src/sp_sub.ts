@@ -8,26 +8,6 @@ const decodePayload = require('sparkplug-payload').get("spBv1.0").decodePayload;
 
 
 
-
-
-const publicMQTTServer = {
-    host: "mqtt://test.mosquitto.org",
-    port: 1883,
-    // topic: "spBv1.0/Edge Nodes/#"
-    // topic: "spBv1.0/Sparkplug B Devices/+/JSON-SCADA Server/#",
-    topic: "spBv1.0/#",
-    gunzip: false,
-    pretty: false,
-};
-// const publicMQTTServer = {
-//     url: "mqtt://broker.hivemq.com",
-//     port: 1883,
-//     topic: "spBv1.0/ICSEdge/#",
-//     // topic: "spBv1.0/Sparkplug B Devices/#"
-//     decode: true,
-//     pretty: false,
-// };
-
 const { host, port, topic, gunzip, pretty, verbose } = args;
 
 
