@@ -17,11 +17,11 @@ const space = pretty ? 2 : undefined;
 const mqttClient = connect(host, { port });
 
 
-const onConnected = async () => {
+const onConnect = async () => {
     console.debug("connected to", host, "on port", port);
 
     await mqttClient.subscribe(topic);
-    console.debug("subscribed to", topic);
+    console.debug("subscribed to topic", topic);
 
 
     mqttClient.on(
@@ -42,4 +42,12 @@ const onConnected = async () => {
 
 };
 
-mqttClient.on("connect", onConnected);
+const onDisconnect = async () => {
+    console.debug("disconnected from", host, "on port", port);
+
+    await mqttClient.unsubscribe(topic);
+    console.debug("unsubscribed from topic", topic);
+};
+
+mqttClient.on("connect", onConnect);
+mqttClient.on("disconnect", onDisconnect);
