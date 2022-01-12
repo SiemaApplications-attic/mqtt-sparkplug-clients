@@ -6,7 +6,7 @@ It was called sp_sub for SparkPlug subscribe (similar to [mosquitto_sub](https:/
 
 ```bash
 docker build -t sp_sub .
-echo "alias sp_sub='docker run --rm -it sp_sub sp_sub'" >> ~/.bash_aliases
+echo "alias sp_sub='docker run --rm -it --init sp_sub sp_sub'" >> ~/.bash_aliases
 ```
 
 # run
