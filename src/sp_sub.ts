@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { connect } from "async-mqtt";
 import { Packet } from "mqtt-packet";
 import pako from "pako";
+import Long from "long";
 import { args } from "./args";
 
 const decodePayload = require('sparkplug-payload').get("spBv1.0").decodePayload;
@@ -35,7 +36,16 @@ const onConnect = async () => {
                     decoded = decodePayload(body);
                 }
 
-                console.log(verbose ? topic : "", JSON.stringify(decoded, null, space));
+                console.log(verbose ? topic : "", JSON.stringify(
+                    decoded,
+                    (key, value) => {
+                        if (Long.isLong(value)) {
+                            return value.toString();
+                        }
+                        return value;
+                    },
+                    space
+                ));
             }
         }
     );
