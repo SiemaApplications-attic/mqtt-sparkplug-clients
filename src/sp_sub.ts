@@ -2,13 +2,9 @@ import * as _ from "lodash";
 import { connect } from "async-mqtt";
 import { Packet } from "mqtt-packet";
 import pako from "pako"; import { args } from "./args";
-import Long from "long";
 import { decodePayload } from "@jcoreio/sparkplug-payload/spBv1.0";
 
 const { host, port, topic, gunzip, pretty, verbose } = args;
-
-
-const space = pretty ? 2 : undefined;
 
 
 const mqttClient = connect(host, { port });
@@ -32,16 +28,8 @@ const onConnect = async () => {
                     decoded = decodePayload(body);
                 }
 
-                console.log(verbose ? topic : "", JSON.stringify(
-                    decoded,
-                    (key, value) => {
-                        if (Long.isLong(value)) {
-                            return value.toString();
-                        }
-                        return value;
-                    },
-                    space
-                ));
+                console.dir(verbose ? topic : "");
+                console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: true, depth: Infinity }); // TODO format using the 'pretty' CLI arg
             }
         }
     );
