@@ -1,13 +1,9 @@
 import * as _ from "lodash";
 import { connect } from "async-mqtt";
 import { Packet } from "mqtt-packet";
-import pako from "pako";
+import pako from "pako"; import { args } from "./args";
 import Long from "long";
-import { args } from "./args";
-
-const decodePayload = require('sparkplug-payload').get("spBv1.0").decodePayload;
-
-
+import { decodePayload } from "@jcoreio/sparkplug-payload/spBv1.0";
 
 const { host, port, topic, gunzip, pretty, verbose } = args;
 
@@ -32,7 +28,7 @@ const onConnect = async () => {
                 let decoded = decodePayload(payload);
 
                 if (gunzip && (decoded.uuid !== undefined)) {
-                    const body = pako.inflate(decoded.body);
+                    const body = pako.inflate(decoded.body as Uint8Array);
                     decoded = decodePayload(body);
                 }
 
