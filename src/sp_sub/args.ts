@@ -42,8 +42,8 @@ export const args = yargs(hideBin(process.argv))
     .example([
         ['$0 -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"'],
         ['$0 -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#" | cut -c -180'],
-        ['$0 -h mqtt://broker.hivemq.com -t "spBv1.0/ICSEdge/#"'],
-        ['$0 -h mqtt://test.mosquitto.org -t "spBv1.0/Sparkplug B Devices/+/JSON-SCADA Server/#" -g -v'],
+        ['$0 -h mqtt://broker.hivemq.com -t "spBv1.0/#"'],
+        ['$0 -h mqtt://test.mosquitto.org -t "spBv1.0/SparkplugDevices/+/JsonScada/#" -g -v'],
     ])
     .parseSync();
 

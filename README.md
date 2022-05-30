@@ -5,15 +5,15 @@ It was called sp_sub for SparkPlug subscribe (similar to [mosquitto_sub](https:/
 # build
 
 ```bash
-docker build -t sp_sub .
-echo "alias sp_sub='docker run --rm -it --init sp_sub sp_sub'" >> ~/.bash_aliases
+docker build -t mqtt-sparkplug-clients .
+echo "alias sp_sub='docker run --rm -it --init mqtt-sparkplug-clients sp_sub'" >> ~/.bash_aliases
 ```
 
 # run
 ```bash
 sp_sub --help
 sp_sub -h mqtt://broker.hivemq.com -t "spBv1.0/ICSEdge/#"
-sp_sub -h mqtt://test.mosquitto.org -t "spBv1.0/Sparkplug B Devices/+/JSON-SCADA Server/#" -g -v
+sp_sub -h mqtt://test.mosquitto.org -t "spBv1.0/SparkplugDevices/+/JsonScada/#" -g -v
 ```
 
 # options
@@ -34,6 +34,6 @@ Options:
 Examples:
   sp_sub -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"
   sp_sub -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#" | cut -c -180
-  sp_sub -h mqtt://broker.hivemq.com -t "spBv1.0/ICSEdge/#"
+  sp_sub -h mqtt://broker.hivemq.com -t "spBv1.0/#"
   sp_sub -h mqtt://test.mosquitto.org -t "spBv1.0/Sparkplug B Devices/+/JSON-SCADA Server/#" -g -v
 ```
