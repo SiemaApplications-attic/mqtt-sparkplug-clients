@@ -28,8 +28,11 @@ const onConnect = async () => {
                     decoded = decodePayload(body);
                 }
 
-                console.dir(verbose ? topic : "");
-                console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: true, depth: Infinity }); // TODO format using the 'pretty' CLI arg
+                if (verbose) {
+                    console.log();
+                    console.log(topic);
+                }
+                console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
             }
         }
     );
