@@ -21,18 +21,22 @@ const onConnect = async () => {
         "message",
         async (topic: string, payload: Buffer, msg: Packet) => {
             if (msg.cmd === "publish") {
-                let decoded = decodePayload(payload);
+                try {
+                    let decoded = decodePayload(payload);
 
-                if (gunzip && (decoded.uuid !== undefined)) {
-                    const body = pako.inflate(decoded.body as Uint8Array);
-                    decoded = decodePayload(body);
-                }
+                    if (gunzip && (decoded.uuid !== undefined)) {
+                        const body = pako.inflate(decoded.body as Uint8Array);
+                        decoded = decodePayload(body);
+                    }
 
-                if (verbose) {
-                    console.log();
-                    console.log(topic);
+                    if (verbose) {
+                        console.log();
+                        console.log(topic);
+                    }
+                    console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
+                } catch (e) {
+                    console.error(e);
                 }
-                console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
             }
         }
     );
