@@ -4,9 +4,11 @@
   "description": "MQTT sparkplug CLI",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/sp_sub/sp_sub.ts",
+    "start": "npm run sp_sub",
+    "sp_sub": "ts-node src/sp_sub/sp_sub.ts",
+    "sp_pub": "ts-node src/sp_pub/sp_pub.ts",
     "transpile": "tsc",
-    "build": "pkg out/sp_sub/sp_sub.js --output /usr/local/bin/sp_sub",
+    "build": "pkg out/sp_sub/sp_sub.js --output /usr/local/bin/sp_sub && pkg out/sp_pub/sp_pub.js --output /usr/local/bin/sp_pub",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "SIEMA applications",

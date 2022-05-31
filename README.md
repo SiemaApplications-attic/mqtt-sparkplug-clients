@@ -1,39 +1,50 @@
-Subscribe to MQTT SparkPlug topics.
-It was called sp_sub for SparkPlug subscribe (similar to [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)).
+# MQTT Sparkplug - subscribe
+
+Use `sp_sub` to subscribe to MQTT Sparkplug topics.
+
+```bash
+sp_sub --help
+
+# subscribe to MQTT Sparkplug topics
+sp_sub -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"
+sp_sub -h mqtt://broker.hivemq.com -t "spBv1.0/#"
+sp_sub -h mqtt://test.mosquitto.org -t "spBv1.0/SparkplugDevices/+/JsonScada/#" -g -v
+```
+
+Inspired from [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)
+
+
+
+# MQTT Sparkplug - publish
+
+Use `sp_pub` to bundle MQTT Sparkplug metrics into an MQTT Sparkplug payload, and publish that payload.
+
+```bash
+sp_pub --help
+
+# publish MQTT Sparkplug topics
+sp_pub \
+  -h mqtt://10.106.6.240 \
+  -p 1884 \
+  -t "spBv1.0/GrandParis/NCMD/can-spBV1.0-gateway" \
+  -m '[{"name": "Node Control/Rebirth", "type": "Boolean", "value": true}]'
+```
 
 
 # build
 
 ```bash
 docker build -t mqtt-sparkplug-clients .
-echo "alias sp_sub='docker run --rm -it --init mqtt-sparkplug-clients sp_sub'" >> ~/.bash_aliases
 ```
-
-# run
+then install, if you like:
 ```bash
-sp_sub --help
-sp_sub -h mqtt://broker.hivemq.com -t "spBv1.0/ICSEdge/#"
-sp_sub -h mqtt://test.mosquitto.org -t "spBv1.0/SparkplugDevices/+/JsonScada/#" -g -v
+echo "alias sp_sub='docker run --rm -it --init mqtt-sparkplug-clients sp_sub'" >> ~/.bash_aliases
+echo "alias sp_pub='docker run --rm -it --init mqtt-sparkplug-clients sp_pub'" >> ~/.bash_aliases
 ```
 
-# options
+# develop / local run
 
-```
-Usage: sp_sub [options]
-
-Options:
-      --help     Show help                                             [boolean]
-      --version  Show version number                                   [boolean]
-  -v, --verbose  Run with verbose logging                              [boolean]
-  -h, --host     mqtt host to connect to  [string] [default: "mqtt://localhost"]
-  -p, --port     network port to connect to             [number] [default: 1883]
-  -t, --topic    mqtt topic to subscribe to                  [string] [required]
-  -g, --gunzip   gunzip SparkPlug body if compressed  [boolean] [default: false]
-      --pretty   'pretty-print' JSON payload          [boolean] [default: false]
-
-Examples:
-  sp_sub -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"
-  sp_sub -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#" | cut -c -180
-  sp_sub -h mqtt://broker.hivemq.com -t "spBv1.0/#"
-  sp_sub -h mqtt://test.mosquitto.org -t "spBv1.0/Sparkplug B Devices/+/JSON-SCADA Server/#" -g -v
+```bash
+npm install
+npm run sp_sub -- -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"
 ```
