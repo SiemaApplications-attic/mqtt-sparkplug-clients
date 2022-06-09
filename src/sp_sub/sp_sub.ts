@@ -4,7 +4,7 @@ import { Packet } from "mqtt-packet";
 import pako from "pako"; import { args } from "./args";
 import { decodePayload } from "@jcoreio/sparkplug-payload/spBv1.0";
 
-const { host, port, topic, gunzip, pretty, verbose } = args;
+const { host, port, topic, gunzip, pretty, json, verbose } = args;
 
 
 const mqttClient = connect(host, { port });
@@ -33,7 +33,11 @@ const onConnect = async () => {
                         console.log();
                         console.log(topic);
                     }
-                    console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
+                    if (json) {
+                        console.log(JSON.stringify(decoded, (key, value) => typeof value === "bigint" ? value.toString() : value, pretty ? 2 : undefined));
+                    } else {
+                        console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
+                    }
                 } catch (e) {
                     console.error(e);
                 }

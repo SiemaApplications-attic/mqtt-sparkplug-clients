@@ -39,6 +39,12 @@ export const args = yargs(hideBin(process.argv))
         description: "'pretty-print' JSON payload",
         default: false,
     })
+    .option("json", {
+        alias: "j",
+        type: "boolean",
+        description: "output as a JSON string",
+        default: false,
+    })
     .example([
         ['$0 -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"'],
         ['$0 -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#" | cut -c -180'],
