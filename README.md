@@ -38,8 +38,8 @@ docker build -t mqtt-sparkplug-clients .
 ```
 then install, if you like:
 ```bash
-echo "alias sp_sub='docker run --rm -it --init mqtt-sparkplug-clients sp_sub'" >> ~/.bash_aliases
-echo "alias sp_pub='docker run --rm -it --init mqtt-sparkplug-clients sp_pub'" >> ~/.bash_aliases
+echo "alias sp_sub='docker run --rm -it --init -v `pwd`:`pwd` -w `pwd` mqtt-sparkplug-clients sp_sub'" >> ~/.bash_aliases
+echo "alias sp_pub='docker run --rm -it --init -v `pwd`:`pwd` -w `pwd` mqtt-sparkplug-clients sp_pub'" >> ~/.bash_aliases
 ```
 
 # develop / local run
