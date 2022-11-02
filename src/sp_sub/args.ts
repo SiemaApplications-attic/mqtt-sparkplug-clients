@@ -71,8 +71,10 @@ export const args = yargs(hideBin(process.argv))
         ['$0 -h mqtt://mqtt-broker -p 1884 -t "spBv1.0/#"'],
         ['$0 -h mqtt://broker.hivemq.com -t "spBv1.0/#"'],
         ['$0 -h mqtt://test.mosquitto.org -t "spBv1.0/SparkplugDevices/+/JsonScada/#" -g -v'],
-        ['$0 -h mqtts://mqtt-broker -p 8884 -t spBv1.0/# -i client-id --insecure'],
-        ['$0 -h mqtts://mqtt-broker -p 8884 -t spBv1.0/# -i client-id --cafile ./ssl/CA.crt --key ./ssl/mqtt-broker.key --cert ./ssl/mqtt-broker.crt']
+        ['$0 -h mqtts://test.mosquitto.org -p 8883 -t "spBv1.0/#" -i client-id --insecure'],
+        ['$0 -h mqtts://test.mosquitto.org -p 8883 -t "spBv1.0/#" -i client-id --cafile ./ssl/mosquitto.org.crt -g -v'],
+        ['$0 -h mqtts://test.mosquitto.org -p 8884 -t "spBv1.0/#" -i client-id --cafile ./ssl/mosquitto.org.crt --key ./ssl/mqtt-broker.key --cert ./ssl/mqtt-broker.crt'],
+        ['$0 -h mqtts://test.mosquitto.org -p 8886 -t "spBv1.0/#" -i client-id'],
     ])
     .parseSync();
 
