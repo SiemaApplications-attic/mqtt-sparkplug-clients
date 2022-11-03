@@ -1,14 +1,33 @@
 import * as _ from "lodash";
-import { connect } from "async-mqtt";
+import { connect, IClientOptions } from "async-mqtt";
 import { Packet } from "mqtt-packet";
 import pako from "pako"; import { args } from "./args";
 import { decodePayload } from "@jcoreio/sparkplug-payload/spBv1.0";
+import fs from "fs";
 
-const { host, port, topic, gunzip, pretty, json, verbose } = args;
+const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id } = args;
 
 
-const mqttClient = connect(host, { port });
+const mqttClientOptions: IClientOptions = {
+    host,
+    port,
+    rejectUnauthorized: !insecure,
+    clientId: id,
+};
 
+if (cafile !== undefined) {
+    mqttClientOptions.ca = fs.readFileSync(cafile);
+}
+
+if (key !== undefined) {
+    mqttClientOptions.key = fs.readFileSync(key);
+}
+
+if (cert !== undefined) {
+    mqttClientOptions.cert = fs.readFileSync(cert);
+}
+
+const mqttClient = connect(host, mqttClientOptions);
 
 const onConnect = async () => {
     console.debug("connected to", host, "on port", port);
@@ -54,5 +73,11 @@ const onDisconnect = async () => {
     console.debug("unsubscribed from topic", topic);
 };
 
+const onError = (error: Error) => {
+    console.error(error);
+    // process.exit(-2);
+};
+
 mqttClient.on("connect", onConnect);
 mqttClient.on("disconnect", onDisconnect);
+mqttClient.on("error", onError);

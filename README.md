@@ -1,6 +1,7 @@
 # MQTT Sparkplug - subscribe
 
 Use `sp_sub` to subscribe to MQTT Sparkplug topics.
+Inspired from [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)
 
 ```bash
 sp_sub --help
@@ -11,7 +12,13 @@ sp_sub -h mqtt://broker.hivemq.com -t "spBv1.0/#"
 sp_sub -h mqtt://test.mosquitto.org -t "spBv1.0/SparkplugDevices/+/JsonScada/#" -g -v
 ```
 
-Inspired from [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)
+
+## tls
+
+```bash
+sp_sub -h mqtts://test.mosquitto.org -p 8883  -t "spBv1.0/#" -g -v --insecure
+sp_sub -h mqtts://broker.hivemq.com -p 8883 -t "spBv1.0/#" --insecure
+```
 
 
 
@@ -38,8 +45,8 @@ docker build -t mqtt-sparkplug-clients .
 ```
 then install, if you like:
 ```bash
-echo "alias sp_sub='docker run --rm -it --init mqtt-sparkplug-clients sp_sub'" >> ~/.bash_aliases
-echo "alias sp_pub='docker run --rm -it --init mqtt-sparkplug-clients sp_pub'" >> ~/.bash_aliases
+echo "alias sp_sub='docker run --rm -it --init -v `pwd`:`pwd` -w `pwd` mqtt-sparkplug-clients sp_sub'" >> ~/.bash_aliases
+echo "alias sp_pub='docker run --rm -it --init -v `pwd`:`pwd` -w `pwd` mqtt-sparkplug-clients sp_pub'" >> ~/.bash_aliases
 ```
 
 # develop / local run
@@ -47,4 +54,9 @@ echo "alias sp_pub='docker run --rm -it --init mqtt-sparkplug-clients sp_pub'" >
 ```bash
 npm install
 npm run sp_sub -- -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"
+npm run sp_sub -- -h mqtts://test.mosquitto.org -p 8883 -t "spBv1.0/#" -i client-id --cafile ./ssl/mosquitto.org.crt -g -v
 ```
+
+# public MQTT broker
+
+see the features the public test server has to offer at https://test.mosquitto.org/
