@@ -34,36 +34,31 @@ const onConnect = async () => {
 
     await mqttClient.subscribe(topic);
     console.debug("subscribed to topic", topic);
+};
 
+const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
+    if (msg.cmd === "publish") {
+        try {
+            let decoded = decodePayload(payload);
 
-    mqttClient.on(
-        "message",
-        async (topic: string, payload: Buffer, msg: Packet) => {
-            if (msg.cmd === "publish") {
-                try {
-                    let decoded = decodePayload(payload);
-
-                    if (gunzip && (decoded.uuid !== undefined)) {
-                        const body = pako.inflate(decoded.body as Uint8Array);
-                        decoded = decodePayload(body);
-                    }
-
-                    if (verbose) {
-                        console.log();
-                        console.log(topic);
-                    }
-                    if (json) {
-                        console.log(JSON.stringify(decoded, (key, value) => typeof value === "bigint" ? value.toString() : value, pretty ? 2 : undefined));
-                    } else {
-                        console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
-                    }
-                } catch (e) {
-                    console.error(e);
-                }
+            if (gunzip && (decoded.uuid !== undefined)) {
+                const body = pako.inflate(decoded.body as Uint8Array);
+                decoded = decodePayload(body);
             }
-        }
-    );
 
+            if (verbose) {
+                console.log();
+                console.log(topic);
+            }
+            if (json) {
+                console.log(JSON.stringify(decoded, (key, value) => typeof value === "bigint" ? value.toString() : value, pretty ? 2 : undefined));
+            } else {
+                console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
 };
 
 const onDisconnect = async () => {
@@ -80,4 +75,5 @@ const onError = (error: Error) => {
 
 mqttClient.on("connect", onConnect);
 mqttClient.on("disconnect", onDisconnect);
+mqttClient.on( "message", onMessage);
 mqttClient.on("error", onError);
