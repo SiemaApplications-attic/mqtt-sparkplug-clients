@@ -58,9 +58,6 @@ const onConnect = async () => {
 
 const onDisconnect = async () => {
     console.debug("disconnected from", host, "on port", port);
-
-    await mqttClient.unsubscribe(topic);
-    console.debug("unsubscribed from topic", topic);
 };
 
 

@@ -63,9 +63,6 @@ const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
 
 const onDisconnect = async () => {
     console.debug("disconnected from", host, "on port", port);
-
-    await mqttClient.unsubscribe(topic);
-    console.debug("unsubscribed from topic", topic);
 };
 
 const onError = (error: Error) => {
