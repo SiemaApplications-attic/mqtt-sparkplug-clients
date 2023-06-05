@@ -2,8 +2,11 @@ import * as _ from "lodash";
 import { connect, IClientOptions } from "async-mqtt";
 import { Packet } from "mqtt-packet";
 import pako from "pako"; import { args } from "./args";
-import { decodePayload } from "@jcoreio/sparkplug-payload/spBv1.0";
 import fs from "fs";
+
+const sparkplug = require('sparkplug-payload');
+const sparkplugbpayload = sparkplug.get("spBv1.0");
+const decodePayload = sparkplugbpayload.decodePayload;
 
 const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id } = args;
 
@@ -39,6 +42,11 @@ const onConnect = async () => {
 const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
     if (msg.cmd === "publish") {
         try {
+            if (verbose) {
+                console.log();
+                console.log(topic);
+            }
+
             let decoded = decodePayload(payload);
 
             if (gunzip && (decoded.uuid !== undefined)) {
@@ -46,10 +54,6 @@ const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
                 decoded = decodePayload(body);
             }
 
-            if (verbose) {
-                console.log();
-                console.log(topic);
-            }
             if (json) {
                 console.log(JSON.stringify(decoded, (key, value) => typeof value === "bigint" ? value.toString() : value, pretty ? 2 : undefined));
             } else {
