@@ -3,6 +3,7 @@ import { connect, IClientOptions } from "async-mqtt";
 import { Packet } from "mqtt-packet";
 import pako from "pako"; import { args } from "./args";
 import fs from "fs";
+import Long from "long";
 
 const sparkplug = require('sparkplug-payload');
 const sparkplugbpayload = sparkplug.get("spBv1.0");
@@ -55,7 +56,7 @@ const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
             }
 
             if (json) {
-                console.log(JSON.stringify(decoded, (key, value) => typeof value === "bigint" ? value.toString() : value, pretty ? 2 : undefined));
+                console.log(JSON.stringify(decoded, (key, value) => (typeof value === "bigint") || (Long.isLong(value)) ? parseFloat(value.toString()) : value, pretty ? 2 : undefined));
             } else {
                 console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
             }
