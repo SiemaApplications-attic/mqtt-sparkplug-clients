@@ -4,7 +4,7 @@ import fs from "fs";
 
 const sparkplug = require('sparkplug-payload');
 const sparkplugbpayload = sparkplug.get("spBv1.0");
-const encodePayload = sparkplugbpayload.decodePayload;
+const encodePayload = sparkplugbpayload.encodePayload;
 
 const { host, port, topic, message, cafile, key, cert, insecure, id } = args;
 
