@@ -9,7 +9,7 @@ const sparkplug = require('sparkplug-payload');
 const sparkplugbpayload = sparkplug.get("spBv1.0");
 const decodePayload = sparkplugbpayload.decodePayload;
 
-const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id } = args;
+const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id, subscribeMetric } = args;
 
 
 const mqttClientOptions: IClientOptions = {
@@ -43,11 +43,6 @@ const onConnect = async () => {
 const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
     if (msg.cmd === "publish") {
         try {
-            if (verbose) {
-                console.log();
-                console.log(topic);
-            }
-
             let decoded = decodePayload(payload);
 
             if (gunzip && (decoded.uuid !== undefined)) {
@@ -55,13 +50,33 @@ const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
                 decoded = decodePayload(body);
             }
 
+            const filteredMetrics = [];
+            for (const metric of decoded.metrics) {
+                if (subscribeMetric !== undefined) {
+                    if (metric.name.match(subscribeMetric)) {
+                        filteredMetrics.push(metric);
+                    }
+                }
+            }
+            if (filteredMetrics.length === 0) {
+                return;
+            }
+            decoded.metrics = filteredMetrics;
+
+            if (verbose) {
+                console.log();
+                console.log(topic);
+            }
+
+
             if (json) {
                 console.log(JSON.stringify(decoded, (key, value) => (typeof value === "bigint") || (Long.isLong(value)) ? parseFloat(value.toString()) : value, pretty ? 2 : undefined));
             } else {
                 console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
             }
-        } catch (e) {
-            console.error(e);
+        } catch (e: any) {
+            console.error(e.message);
+            console.error(Buffer.from(payload));
         }
     }
 };
@@ -77,5 +92,5 @@ const onError = (error: Error) => {
 
 mqttClient.on("connect", onConnect);
 mqttClient.on("disconnect", onDisconnect);
-mqttClient.on( "message", onMessage);
+mqttClient.on("message", onMessage);
 mqttClient.on("error", onError);
