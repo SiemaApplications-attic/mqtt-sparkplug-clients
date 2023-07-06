@@ -67,9 +67,13 @@ export const args = yargs(hideBin(process.argv))
         type: "string",
         description: "The id to use for this client."
     })
-    .option("subscribe-metric", {
+    .option("include-metric", {
         type: "string",
         description: "filter out metrics not matching regexp provided"
+    })
+    .option("exclude-metric", {
+        type: "string",
+        description: "filter out metrics matching regexp provided"
     })
     .option("show-timestamp", {
         type: "boolean",

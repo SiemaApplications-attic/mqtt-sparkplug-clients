@@ -9,7 +9,7 @@ const sparkplug = require('sparkplug-payload');
 const sparkplugbpayload = sparkplug.get("spBv1.0");
 const decodePayload = sparkplugbpayload.decodePayload;
 
-const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id, subscribeMetric, showTimestamp } = args;
+const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id, includeMetric, excludeMetric, showTimestamp } = args;
 
 
 const mqttClientOptions: IClientOptions = {
@@ -52,10 +52,16 @@ const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
 
             const filteredMetrics = [];
             for (const metric of decoded.metrics) {
-                if (subscribeMetric !== undefined) {
-                    if (metric.name.match(subscribeMetric)) {
+                if (includeMetric !== undefined) {
+                    if (metric.name.match(includeMetric)) {
                         filteredMetrics.push(metric);
                     }
+                } else if (excludeMetric !== undefined) {
+                    if (!metric.name.match(excludeMetric)) {
+                        filteredMetrics.push(metric);
+                    }
+                } else {
+                    filteredMetrics.push(metric);
                 }
             }
             if (filteredMetrics.length === 0) {
