@@ -2,10 +2,14 @@ import * as _ from "lodash";
 import { connect, IClientOptions } from "async-mqtt";
 import { Packet } from "mqtt-packet";
 import pako from "pako"; import { args } from "./args";
-import { decodePayload } from "@jcoreio/sparkplug-payload/spBv1.0";
 import fs from "fs";
+import Long from "long";
 
-const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id } = args;
+const sparkplug = require('sparkplug-payload');
+const sparkplugbpayload = sparkplug.get("spBv1.0");
+const decodePayload = sparkplugbpayload.decodePayload;
+
+const { host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id, includeMetric, excludeMetric, showTimestamp } = args;
 
 
 const mqttClientOptions: IClientOptions = {
@@ -46,17 +50,38 @@ const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
                 decoded = decodePayload(body);
             }
 
+            const filteredMetrics = [];
+            for (const metric of decoded.metrics) {
+                if (includeMetric !== undefined) {
+                    if (metric.name.match(includeMetric)) {
+                        filteredMetrics.push(metric);
+                    }
+                } else if (excludeMetric !== undefined) {
+                    if (!metric.name.match(excludeMetric)) {
+                        filteredMetrics.push(metric);
+                    }
+                } else {
+                    filteredMetrics.push(metric);
+                }
+            }
+            if (filteredMetrics.length === 0) {
+                return;
+            }
+            decoded.metrics = filteredMetrics;
+
             if (verbose) {
                 console.log();
-                console.log(topic);
+                console.log(`${showTimestamp ? new Date().toISOString() + " ": ""}${topic}`);
             }
+
             if (json) {
-                console.log(JSON.stringify(decoded, (key, value) => typeof value === "bigint" ? value.toString() : value, pretty ? 2 : undefined));
+                console.log(JSON.stringify(decoded, (key, value) => (typeof value === "bigint") || (Long.isLong(value)) ? parseFloat(value.toString()) : value, pretty ? 2 : undefined));
             } else {
                 console.dir(decoded, { breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity });
             }
-        } catch (e) {
-            console.error(e);
+        } catch (e: any) {
+            console.error(e.message);
+            console.error(Buffer.from(payload));
         }
     }
 };
@@ -72,5 +97,5 @@ const onError = (error: Error) => {
 
 mqttClient.on("connect", onConnect);
 mqttClient.on("disconnect", onDisconnect);
-mqttClient.on( "message", onMessage);
+mqttClient.on("message", onMessage);
 mqttClient.on("error", onError);

@@ -67,6 +67,18 @@ export const args = yargs(hideBin(process.argv))
         type: "string",
         description: "The id to use for this client."
     })
+    .option("include-metric", {
+        type: "string",
+        description: "filter out metrics not matching regexp provided"
+    })
+    .option("exclude-metric", {
+        type: "string",
+        description: "filter out metrics matching regexp provided"
+    })
+    .option("show-timestamp", {
+        type: "boolean",
+        description: "prepend timestamp"
+    })
     .example([
         ['$0 -h mqtt://mqtt-broker -p 1884 -t "spBv1.0/#"'],
         ['$0 -h mqtt://broker.hivemq.com -t "spBv1.0/#"'],
