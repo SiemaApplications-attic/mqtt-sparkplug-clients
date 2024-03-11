@@ -27,7 +27,7 @@
     "lodash": "^4.17.21",
     "long": "^5.2.0",
     "pako": "^2.0.4",
-    "sparkplug-payload": "^1.0.1",
+    "sparkplug-payload": "file:tahu/javascript/core/sparkplug-payload",
     "yargs": "^17.3.1"
   }
 }
