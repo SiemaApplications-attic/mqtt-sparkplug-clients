@@ -42,7 +42,7 @@ const onConnect = async () => {
         const inputPayload = {
             timestamp: new Date().getTime(),
             metrics,
-            seq: 1
+            seq: 0
         };
 
         const encoded = encodePayload(inputPayload);
