@@ -5,7 +5,7 @@
  */
 
 import {UPayload} from "sparkplug-payload/lib/sparkplugbpayload";
-import {args} from "./args";
+import {args} from "../args";
 
 const {includeMetric, excludeMetric} = args;
 

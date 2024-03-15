@@ -4,13 +4,13 @@ import {Packet} from "mqtt-packet";
 import pako from "pako";
 import {args} from "./args";
 import fs from "fs";
-import Long from "long";
 
 import * as sparkplug from 'sparkplug-payload';
 const sparkplugbpayload = sparkplug.get("spBv1.0");
 const decodePayload = sparkplugbpayload!.decodePayload;
 
-import {filter} from "./filter";
+import {filter} from "./helpers/filter";
+import {customJSONStringify} from "./helpers/format";
 
 const {host, port, topic, gunzip, pretty, json, verbose, cafile, key, cert, insecure, id, showTimestamp} = args;
 
@@ -61,7 +61,7 @@ const onMessage = async (topic: string, payload: Buffer, msg: Packet) => {
             }
 
             if (json) {
-                console.log(JSON.stringify(decoded, (key, value) => (typeof value === "bigint") || (Long.isLong(value)) ? parseFloat(value.toString()) : value, pretty ? 2 : undefined));
+                console.log(JSON.stringify(decoded, customJSONStringify, pretty ? 2 : undefined));
             } else {
                 console.dir(decoded, {breakLength: Infinity, maxStringLength: Infinity, maxArrayLength: Infinity, compact: !pretty, depth: Infinity});
             }
