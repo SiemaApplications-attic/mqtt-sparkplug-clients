@@ -41,6 +41,9 @@ sp_pub \
 # build
 
 ```bash
+# install tahu
+git submodule update --init --recursive
+
 docker build -t mqtt-sparkplug-clients .
 ```
 then install, if you like:
@@ -52,6 +55,14 @@ echo "alias sp_pub='docker run --rm -it --init -v `pwd`:`pwd` -w `pwd` mqtt-spar
 # develop / local run
 
 ```bash
+# install and build tahu/sparkplug-payload for JS (TS and protobuf files need to be built)
+git submodule update --init --recursive
+cd ./tahu/javascript/core/sparkplug-payload
+npm install
+npm run build
+
+# back to the root directory
+cd ~/workspace/mqtt-sparkplug-clients
 npm install
 npm run sp_sub -- -h mqtt://10.106.6.240 -p 1884 -t "spBv1.0/#"
 npm run sp_sub -- -h mqtts://test.mosquitto.org -p 8883 -t "spBv1.0/#" -i client-id --cafile ./ssl/mosquitto.org.crt -g -v

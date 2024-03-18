@@ -1,12 +1,12 @@
-import { connect, IClientOptions } from "async-mqtt";
-import { args } from "./args";
+import {connect, IClientOptions} from "async-mqtt";
+import {args} from "./args";
 import fs from "fs";
 
-const sparkplug = require('sparkplug-payload');
+import * as sparkplug from 'sparkplug-payload';
 const sparkplugbpayload = sparkplug.get("spBv1.0");
-const encodePayload = sparkplugbpayload.encodePayload;
+const encodePayload = sparkplugbpayload!.encodePayload;
 
-const { host, port, topic, message, cafile, key, cert, insecure, id } = args;
+const {host, port, topic, message, cafile, key, cert, insecure, id} = args;
 
 
 const mqttClientOptions: IClientOptions = {
@@ -42,7 +42,7 @@ const onConnect = async () => {
         const inputPayload = {
             timestamp: new Date().getTime(),
             metrics,
-            seq: 1
+            seq: 0
         };
 
         const encoded = encodePayload(inputPayload);
